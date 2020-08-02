@@ -2,9 +2,6 @@
 use serde_json::{json, Value as ValueJson};
 use xml::reader::{EventReader, XmlEvent};
 
-// https://data.bmkg.go.id/autogempa.xml
-// https://data.bmkg.go.id/gempadirasakan.xml (mutiple)
-
 pub enum Url {
   Autogempa,
   GempaTerkini,
