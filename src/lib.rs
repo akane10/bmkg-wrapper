@@ -41,7 +41,7 @@ mod tests {
     //         ),
     //     ]];
 
-    //     let x = gempa::get_data(gempa::Url::autogempa);
+    //     let x = gempa::Gempa::get_data(gempa::Url::Autogempa);
 
     //     assert_eq!(x.unwrap(), result);
     // }

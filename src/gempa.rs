@@ -1,16 +1,51 @@
 // use std::collections::HashMap;
+use serde_json::{json, Value as ValueJson};
 use xml::reader::{EventReader, XmlEvent};
 
 // https://data.bmkg.go.id/autogempa.xml
 // https://data.bmkg.go.id/gempadirasakan.xml (mutiple)
 
 pub enum Url {
-  autogempa,
-  gempa_terkini,
-  gempa_dirasakan,
-  last_tsunami,
-  en_autogempa,
-  en_gempaterkini,
+  Autogempa,
+  GempaTerkini,
+  GempaDirasakan,
+  LastTsunami,
+  EnAutogempa,
+  EnGempaTerkini,
+}
+
+pub struct Gempa;
+
+impl Gempa {
+  pub fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
+    let url = match url {
+      Url::Autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
+      Url::GempaTerkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
+      Url::GempaDirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
+      Url::LastTsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
+      Url::EnAutogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
+      Url::EnGempaTerkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
+    };
+
+    let data = get_data(url);
+    data
+  }
+
+  pub fn to_json(
+    data: Vec<Vec<(String, String)>>,
+  ) -> Result<Vec<ValueJson>, Box<dyn std::error::Error>> {
+    let mut vec = Vec::new();
+
+    for i in 0..data.len() {
+      let y = data[i].iter().fold(json!({}), |mut acc, (k, v)| {
+        acc[k] = ValueJson::String(v.to_string());
+        acc
+      });
+      vec.push(y)
+    }
+
+    Ok(vec)
+  }
 }
 
 type Key = String;
@@ -72,16 +107,7 @@ fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
 }
 
 #[tokio::main]
-pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
-  let url = match url {
-    Url::autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
-    Url::gempa_terkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
-    Url::gempa_dirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
-    Url::last_tsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
-    Url::en_autogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
-    Url::en_gempaterkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
-  };
-
+async fn get_data(url: String) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
   let xml = get_xml(&url).await;
 
   match xml {
