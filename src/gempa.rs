@@ -14,40 +14,6 @@ pub enum Url {
   EnGempaTerkini,
 }
 
-pub struct Gempa;
-
-impl Gempa {
-  pub fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
-    let url = match url {
-      Url::Autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
-      Url::GempaTerkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
-      Url::GempaDirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
-      Url::LastTsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
-      Url::EnAutogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
-      Url::EnGempaTerkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
-    };
-
-    let data = get_data(url);
-    data
-  }
-
-  pub fn to_json(
-    data: Vec<Vec<(String, String)>>,
-  ) -> Result<Vec<ValueJson>, Box<dyn std::error::Error>> {
-    let mut vec = Vec::new();
-
-    for i in 0..data.len() {
-      let y = data[i].iter().fold(json!({}), |mut acc, (k, v)| {
-        acc[k] = ValueJson::String(v.to_string());
-        acc
-      });
-      vec.push(y)
-    }
-
-    Ok(vec)
-  }
-}
-
 type Key = String;
 type Value = String;
 
@@ -107,7 +73,15 @@ fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
 }
 
 #[tokio::main]
-async fn get_data(url: String) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
+pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
+  let url = match url {
+    Url::Autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
+    Url::GempaTerkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
+    Url::GempaDirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
+    Url::LastTsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
+    Url::EnAutogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
+    Url::EnGempaTerkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
+  };
   let xml = get_xml(&url).await;
 
   match xml {
@@ -122,6 +96,22 @@ async fn get_data(url: String) -> Result<Vec<Vec<(String, String)>>, Box<dyn std
       Err(e)
     }
   }
+}
+
+pub fn to_json(
+  data: Vec<Vec<(String, String)>>,
+) -> Result<Vec<ValueJson>, Box<dyn std::error::Error>> {
+  let mut vec = Vec::new();
+
+  for i in 0..data.len() {
+    let y = data[i].iter().fold(json!({}), |mut acc, (k, v)| {
+      acc[k] = ValueJson::String(v.to_string());
+      acc
+    });
+    vec.push(y)
+  }
+
+  Ok(vec)
 }
 
 #[cfg(test)]
