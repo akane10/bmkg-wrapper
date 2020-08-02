@@ -6,9 +6,9 @@ use xml::reader::{EventReader, XmlEvent};
 
 pub enum Url {
   autogempa,
-  gempaterkini,
-  gempadirasakan,
-  lasttsunami,
+  gempa_terkini,
+  gempa_dirasakan,
+  last_tsunami,
   en_autogempa,
   en_gempaterkini,
 }
@@ -75,9 +75,9 @@ fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
 pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
   let url = match url {
     Url::autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
-    Url::gempaterkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
-    Url::gempadirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
-    Url::lasttsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
+    Url::gempa_terkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
+    Url::gempa_dirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
+    Url::last_tsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
     Url::en_autogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
     Url::en_gempaterkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
   };
