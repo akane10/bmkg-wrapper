@@ -84,7 +84,6 @@ pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn st
 
   let xml = get_xml(&url).await;
 
-  println!("xml {:?}", xml);
   match xml {
     Ok(v) => {
       let res: Vec<(Key, Value)> = parsing_data(v);
