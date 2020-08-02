@@ -4,6 +4,15 @@ use xml::reader::{EventReader, XmlEvent};
 // https://data.bmkg.go.id/autogempa.xml
 // https://data.bmkg.go.id/gempadirasakan.xml (mutiple)
 
+pub enum Url {
+  autogempa,
+  gempaterkini,
+  gempadirasakan,
+  lasttsunami,
+  en_autogempa,
+  en_gempaterkini,
+}
+
 type Key = String;
 type Value = String;
 
@@ -63,9 +72,16 @@ fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
 }
 
 #[tokio::main]
-pub async fn get_data(
-  url: &String,
-) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
+pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
+  let url = match url {
+    Url::autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
+    Url::gempaterkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
+    Url::gempadirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
+    Url::lasttsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
+    Url::en_autogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
+    Url::en_gempaterkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
+  };
+
   let xml = get_xml(&url).await;
 
   println!("xml {:?}", xml);

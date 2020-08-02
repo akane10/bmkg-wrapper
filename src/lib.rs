@@ -1,16 +1,11 @@
-mod gempa_wrapper;
+mod gempa;
 
 #[cfg(test)]
 mod tests {
-    // use crate::gempa_wrapper;
+    // use crate::gempa;
 
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-
+    // #[test]
     // fn get_data() {
-    //     let url = String::from("https://data.bmkg.go.id/autogempa.xml");
     //     let result = [[
     //         ("Tanggal".to_string(), "30-Jul-20".to_string()),
     //         ("Jam".to_string(), "09:51:20 WIB".to_string()),
@@ -46,8 +41,8 @@ mod tests {
     //         ),
     //     ]];
 
-    //     let x = gempa_wrapper::get_data(&url).unwrap();
+    //     let x = gempa::get_data(gempa::Url::autogempa);
 
-    //     assert_eq!(x, result);
+    //     assert_eq!(x.unwrap(), result);
     // }
 }
