@@ -1,4 +1,4 @@
-mod gempa;
+pub mod gempa;
 
 #[cfg(test)]
 mod tests {
