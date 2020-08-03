@@ -48,24 +48,26 @@ fn parsing_data(data: String) -> Vec<(Key, Value)> {
 }
 
 fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
-  let start = data[0].0.clone();
-  let mut final_r: Vec<Vec<(Key, Value)>> = Vec::new();
-
-  for i in data {
-    let last = match final_r.len() {
-      0 => 0,
-      _ => final_r.len() - 1,
-    };
-
-    if i.0 == start {
-      let x: Vec<(Key, Value)> = [i].to_vec();
-      final_r.push(x);
-    } else {
-      final_r[last].push(i);
+  match data.len() {
+    0 => [].to_vec(),
+    _ => {
+      let start = data[0].0.clone();
+      let mut final_r: Vec<Vec<(Key, Value)>> = Vec::new();
+      for i in data {
+        let last = match final_r.len() {
+          0 => 0,
+          _ => final_r.len() - 1,
+        };
+        if i.0 == start {
+          let x: Vec<(Key, Value)> = [i].to_vec();
+          final_r.push(x);
+        } else {
+          final_r[last].push(i);
+        }
+      }
+      final_r
     }
   }
-
-  final_r
 }
 
 #[tokio::main]
@@ -135,6 +137,30 @@ mod tests {
   }
 
   #[test]
+  fn parsing_data_empty_string_test() {
+    let data = String::from("");
+    let result = [];
+
+    assert_eq!(parsing_data(data), result);
+  }
+
+  #[test]
+  fn parsing_data_invalid_xml_test() {
+    let data = String::from("<Tanggal>30-Jul-20");
+    let result = [];
+
+    assert_eq!(parsing_data(data), result);
+  }
+
+  #[test]
+  fn parsing_data_without_tag_xml_test() {
+    let data = String::from("30-Jul-20");
+    let result = [];
+
+    assert_eq!(parsing_data(data), result);
+  }
+
+  #[test]
   fn separate_data_test() {
     let data = [
       ("Tanggal".to_string(), "30-Jul-20".to_string()),
@@ -154,6 +180,14 @@ mod tests {
         ("Jam".to_string(), "05:51:20 WIB".to_string()),
       ],
     ];
+
+    assert_eq!(separate_data(data), result);
+  }
+
+  #[test]
+  fn separate_data_empty_vec_test() {
+    let data = [].to_vec();
+    let result: Vec<Vec<(Key, Value)>> = [].to_vec();
 
     assert_eq!(separate_data(data), result);
   }
