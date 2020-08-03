@@ -117,47 +117,42 @@ mod tests {
   use super::*;
 
   #[test]
-  fn it_works() {
-    assert_eq!(2 + 2, 4);
-  }
-
-  #[test]
   fn parsing_data_test() {
     let data = String::from(
       "<Tanggal>30-Jul-20</Tanggal>
        <Jam>09:51:20 WIB</Jam>",
     );
 
-    let result = [
+    let expected = [
       ("Tanggal".to_string(), "30-Jul-20".to_string()),
       ("Jam".to_string(), "09:51:20 WIB".to_string()),
     ];
 
-    assert_eq!(parsing_data(data), result);
+    assert_eq!(parsing_data(data), expected);
   }
 
   #[test]
   fn parsing_data_empty_string_test() {
     let data = String::from("");
-    let result = [];
+    let expected = [];
 
-    assert_eq!(parsing_data(data), result);
+    assert_eq!(parsing_data(data), expected);
   }
 
   #[test]
   fn parsing_data_invalid_xml_test() {
     let data = String::from("<Tanggal>30-Jul-20");
-    let result = [];
+    let expected = [];
 
-    assert_eq!(parsing_data(data), result);
+    assert_eq!(parsing_data(data), expected);
   }
 
   #[test]
   fn parsing_data_without_tag_xml_test() {
     let data = String::from("30-Jul-20");
-    let result = [];
+    let expected = [];
 
-    assert_eq!(parsing_data(data), result);
+    assert_eq!(parsing_data(data), expected);
   }
 
   #[test]
@@ -170,7 +165,7 @@ mod tests {
     ]
     .to_vec();
 
-    let result = [
+    let expected = [
       [
         ("Tanggal".to_string(), "30-Jul-20".to_string()),
         ("Jam".to_string(), "09:51:20 WIB".to_string()),
@@ -181,14 +176,43 @@ mod tests {
       ],
     ];
 
-    assert_eq!(separate_data(data), result);
+    assert_eq!(separate_data(data), expected);
   }
 
   #[test]
   fn separate_data_empty_vec_test() {
     let data = [].to_vec();
-    let result: Vec<Vec<(Key, Value)>> = [].to_vec();
+    let expected: Vec<Vec<(Key, Value)>> = [].to_vec();
 
-    assert_eq!(separate_data(data), result);
+    assert_eq!(separate_data(data), expected);
+  }
+
+  #[test]
+  fn to_json_test() {
+    let vec = [
+      ("Tanggal".to_string(), "30-Jul-20".to_string()),
+      ("Jam".to_string(), "09:51:20 WIB".to_string()),
+    ]
+    .to_vec();
+
+    let vec1 = [
+      ("Tanggal".to_string(), "30-Jul-21".to_string()),
+      ("Jam".to_string(), "05:51:20 WIB".to_string()),
+    ]
+    .to_vec();
+
+    let i = serde_json::from_str(r#"{ "Jam": "09:51:20 WIB", "Tanggal": "30-Jul-20"}"#).unwrap();
+    let ii = serde_json::from_str(r#"{ "Jam": "05:51:20 WIB", "Tanggal": "30-Jul-21"}"#).unwrap();
+
+    let data = [vec, vec1].to_vec();
+    let expected: Vec<ValueJson> = [i, ii].to_vec();
+    assert_eq!(to_json(data).unwrap(), expected);
+  }
+
+  #[test]
+  fn to_json_empty_test() {
+    let data = [].to_vec();
+    let expected: Vec<ValueJson> = [].to_vec();
+    assert_eq!(to_json(data).unwrap(), expected);
   }
 }
