@@ -201,8 +201,8 @@ mod tests {
     ]
     .to_vec();
 
-    let i = serde_json::from_str(r#"{ "Jam": "09:51:20 WIB", "Tanggal": "30-Jul-20"}"#).unwrap();
-    let ii = serde_json::from_str(r#"{ "Jam": "05:51:20 WIB", "Tanggal": "30-Jul-21"}"#).unwrap();
+    let i = serde_json::from_str(r#"{ "Tanggal": "30-Jul-20", "Jam": "09:51:20 WIB"}"#).unwrap();
+    let ii = serde_json::from_str(r#"{ "Tanggal": "30-Jul-21", "Jam": "05:51:20 WIB"}"#).unwrap();
 
     let data = [vec, vec1].to_vec();
     let expected: Vec<ValueJson> = [i, ii].to_vec();
