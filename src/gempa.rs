@@ -13,7 +13,7 @@ pub enum Url {
 type Key = String;
 type Value = String;
 
-async fn get_xml(url: &String) -> Result<String, Box<dyn std::error::Error>> {
+async fn fetch_data(url: &str) -> Result<String, Box<dyn std::error::Error>> {
   let resp = reqwest::get(url).await?.text().await?;
   Ok(resp)
 }
@@ -73,14 +73,14 @@ fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
 #[tokio::main]
 pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
   let url = match url {
-    Url::Autogempa => String::from("https://data.bmkg.go.id/autogempa.xml"),
-    Url::GempaTerkini => String::from("https://data.bmkg.go.id/gempaterkini.xml"),
-    Url::GempaDirasakan => String::from("https://data.bmkg.go.id/gempadirasakan.xml"),
-    Url::LastTsunami => String::from("https://data.bmkg.go.id/lasttsunami.xml"),
-    Url::EnAutogempa => String::from("https://data.bmkg.go.id/en_autogempa.xml"),
-    Url::EnGempaTerkini => String::from("https://data.bmkg.go.id/en_gempaterkini.xml"),
+    Url::Autogempa => "https://data.bmkg.go.id/autogempa.xml",
+    Url::GempaTerkini => "https://data.bmkg.go.id/gempaterkini.xml",
+    Url::GempaDirasakan => "https://data.bmkg.go.id/gempadirasakan.xml",
+    Url::LastTsunami => "https://data.bmkg.go.id/lasttsunami.xml",
+    Url::EnAutogempa => "https://data.bmkg.go.id/en_autogempa.xml",
+    Url::EnGempaTerkini => "https://data.bmkg.go.id/en_gempaterkini.xml",
   };
-  let xml = get_xml(&url).await;
+  let xml = fetch_data(url).await;
 
   match xml {
     Ok(v) => {
