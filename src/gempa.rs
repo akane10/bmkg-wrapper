@@ -1,6 +1,8 @@
 use serde_json::{json, Value as ValueJson};
+use std::borrow::Borrow;
 use xml::reader::{EventReader, XmlEvent};
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Url {
     Autogempa,
     GempaTerkini,
@@ -13,6 +15,14 @@ impl Url {
             Url::Autogempa => "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml",
             Url::GempaTerkini => "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.xml",
             Url::GempaDirasakan => "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.xml",
+        }
+    }
+    pub fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
+        match s.borrow().to_lowercase().as_ref() {
+            "autogempa" => Some(Url::Autogempa),
+            "gempaterkini" => Some(Url::GempaTerkini),
+            "gempadirasakan" => Some(Url::GempaDirasakan),
+            _ => None,
         }
     }
 }
@@ -112,6 +122,23 @@ pub fn to_json(data: Vec<Vec<(&str, &str)>>) -> Result<Vec<ValueJson>, Box<dyn s
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::gempa::Url;
+
+    #[test]
+    fn url_from_str_test() {
+        let data = "gempaterkini";
+        let expected = Url::GempaTerkini;
+
+        assert_eq!(Url::from_str(data).unwrap(), expected);
+    }
+
+    #[test]
+    fn url_from_str_but_with_string_test() {
+        let data = String::from("gempaterkini");
+        let expected = Url::GempaTerkini;
+
+        assert_eq!(Url::from_str(data).unwrap(), expected);
+    }
 
     #[test]
     fn parsing_data_test() {
