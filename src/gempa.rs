@@ -105,12 +105,14 @@ pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn st
     }
 }
 
-pub fn to_json(data: Vec<Vec<(&str, &str)>>) -> Result<Vec<ValueJson>, Box<dyn std::error::Error>> {
+pub fn to_json<T: Borrow<str>>(
+    data: Vec<Vec<(T, T)>>,
+) -> Result<Vec<ValueJson>, Box<dyn std::error::Error>> {
     let mut vec = Vec::new();
 
     for i in 0..data.len() {
         let y = data[i].iter().fold(json!({}), |mut acc, (k, v)| {
-            acc[k] = ValueJson::String(v.to_string());
+            acc[k.borrow()] = ValueJson::String(v.borrow().to_string());
             acc
         });
         vec.push(y)
@@ -226,7 +228,7 @@ mod tests {
 
     #[test]
     fn to_json_empty_test() {
-        let data = [].to_vec();
+        let data: Vec<Vec<(&str, &str)>> = [].to_vec();
         let expected: Vec<ValueJson> = [].to_vec();
         assert_eq!(to_json(data).unwrap(), expected);
     }
