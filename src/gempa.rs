@@ -5,9 +5,16 @@ pub enum Url {
     Autogempa,
     GempaTerkini,
     GempaDirasakan,
-    LastTsunami,
-    EnAutogempa,
-    EnGempaTerkini,
+}
+
+impl Url {
+    pub fn to_str(&self) -> &str {
+        match self {
+            Url::Autogempa => "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml",
+            Url::GempaTerkini => "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.xml",
+            Url::GempaDirasakan => "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.xml",
+        }
+    }
 }
 
 type Key = String;
@@ -72,15 +79,7 @@ fn separate_data(data: Vec<(Key, Value)>) -> Vec<Vec<(Key, Value)>> {
 
 #[tokio::main]
 pub async fn get_data(url: Url) -> Result<Vec<Vec<(String, String)>>, Box<dyn std::error::Error>> {
-    let url = match url {
-        Url::Autogempa => "https://data.bmkg.go.id/autogempa.xml",
-        Url::GempaTerkini => "https://data.bmkg.go.id/gempaterkini.xml",
-        Url::GempaDirasakan => "https://data.bmkg.go.id/gempadirasakan.xml",
-        Url::LastTsunami => "https://data.bmkg.go.id/lasttsunami.xml",
-        Url::EnAutogempa => "https://data.bmkg.go.id/en_autogempa.xml",
-        Url::EnGempaTerkini => "https://data.bmkg.go.id/en_gempaterkini.xml",
-    };
-    let xml = fetch_data(url).await;
+    let xml = fetch_data(url.to_str()).await;
 
     match xml {
         Ok(v) => {
