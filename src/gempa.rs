@@ -1,27 +1,9 @@
-use quick_xml;
+use crate::Error;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value as JsonValue};
 use std::borrow::Borrow;
-
-#[derive(Debug)]
-pub enum Error {
-    ReqwestError(reqwest::Error),
-    XmlError(quick_xml::Error),
-}
-
-impl From<reqwest::Error> for Error {
-    fn from(error: reqwest::Error) -> Self {
-        Error::ReqwestError(error)
-    }
-}
-
-impl From<quick_xml::Error> for Error {
-    fn from(error: quick_xml::Error) -> Self {
-        Error::XmlError(error)
-    }
-}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Url {
