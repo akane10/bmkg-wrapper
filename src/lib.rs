@@ -1,16 +1,61 @@
 pub mod gempa;
 
+use std::borrow::Borrow;
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum Url {
+    Autogempa,
+    GempaTerkini,
+    GempaDirasakan,
+}
+
+impl Url {
+    fn to_str(&self) -> &str {
+        match self {
+            Url::Autogempa => "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml",
+            Url::GempaTerkini => "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.xml",
+            Url::GempaDirasakan => "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.xml",
+        }
+    }
+    fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
+        match s.borrow().to_lowercase().as_ref() {
+            "autogempa" => Some(Url::Autogempa),
+            "gempaterkini" => Some(Url::GempaTerkini),
+            "gempadirasakan" => Some(Url::GempaDirasakan),
+            _ => None,
+        }
+    }
+}
+
+async fn fetch_data(url: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let resp = reqwest::get(url).await?.text().await?;
+    Ok(resp)
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::gempa;
+    use super::*;
+
+    #[tokio::test]
+    async fn autogempa_get_data() {
+        let data = gempa::autogempa::get_data().await.unwrap();
+
+        assert!(data.tanggal.is_some());
+    }
 
     #[test]
-    fn get_data() {
-        // let result = ("Tanggal".to_string(), "30-Jul-20".to_string());
+    fn url_from_str_test() {
+        let data = "gempaterkini";
+        let expected = Url::GempaTerkini;
 
-        let data = gempa::get_data(gempa::Url::Autogempa).unwrap();
-        let (key, _) = &data[0][0];
+        assert_eq!(Url::from_str(data).unwrap(), expected);
+    }
 
-        assert_eq!(key, &"Tanggal".to_string());
+    #[test]
+    fn url_from_str_but_with_string_test() {
+        let data = String::from("gempaterkini");
+        let expected = Url::GempaTerkini;
+
+        assert_eq!(Url::from_str(data).unwrap(), expected);
     }
 }
