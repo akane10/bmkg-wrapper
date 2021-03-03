@@ -43,6 +43,13 @@ mod tests {
         assert!(data.tanggal.is_some());
     }
 
+    #[tokio::test]
+    async fn gempaterkini_get_data() {
+        let data = gempa::gempaterkini::get_data().await.unwrap();
+
+        assert!(data[0].tanggal.is_some());
+    }
+
     #[test]
     fn url_from_str_test() {
         let data = "gempaterkini";
