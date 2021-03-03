@@ -1,4 +1,3 @@
-use crate::*;
 use quick_xml;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -7,8 +6,33 @@ use serde_json::{json, Value as JsonValue};
 use std::borrow::Borrow;
 use std::error::Error;
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Url {
+    Autogempa,
+    GempaTerkini,
+    GempaDirasakan,
+}
+
+impl Url {
+    pub fn to_str(&self) -> &str {
+        match self {
+            Url::Autogempa => "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml",
+            Url::GempaTerkini => "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.xml",
+            Url::GempaDirasakan => "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.xml",
+        }
+    }
+    pub fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
+        match s.borrow().to_lowercase().as_ref() {
+            "autogempa" => Some(Url::Autogempa),
+            "gempaterkini" => Some(Url::GempaTerkini),
+            "gempadirasakan" => Some(Url::GempaDirasakan),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Autogempa {
+pub struct Gempa {
     pub tanggal: Option<String>,
     pub jam: Option<String>,
     pub coordinates: Option<String>,
@@ -22,7 +46,7 @@ pub struct Autogempa {
     pub shakemap: Option<String>,
 }
 
-impl Autogempa {
+impl Gempa {
     fn new() -> Self {
         Self {
             tanggal: None,
@@ -82,21 +106,34 @@ impl Autogempa {
     }
 }
 
-fn parse_data(xml: &str) -> Result<Autogempa, Box<dyn Error>> {
-    let mut reader = Reader::from_str(xml);
+async fn fetch_data<T: Borrow<str>>(url: T) -> Result<String, Box<dyn std::error::Error>> {
+    let resp = reqwest::get(url.borrow()).await?.text().await?;
+    Ok(resp)
+}
+
+fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Box<dyn Error>> {
+    let mut reader = Reader::from_str(xml.borrow());
     reader.trim_text(true);
 
     let mut buf = Vec::new();
-    let mut g = Autogempa::new();
+    let mut g = Gempa::new();
+    let mut res = Vec::new();
 
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => match e.name() {
                 b"Tanggal" | b"Jam" | b"coordinates" | b"Lintang" | b"Bujur" | b"Magnitude"
                 | b"Kedalaman" | b"Wilayah" | b"Potensi" | b"Dirasakan" | b"Shakemap" => {
-                    let text = reader.read_text(e.name(), &mut Vec::new());
+                    let text = reader.read_text(e.name(), &mut Vec::new()).unwrap();
                     let v = e.unescape_and_decode(&reader).expect("Error!");
-                    g.set(v, text.unwrap().clone());
+                    g.set(v, text.clone());
+                }
+                _ => (),
+            },
+            Ok(Event::End(ref e)) => match e.name() {
+                b"gempa" => {
+                    res.push(g);
+                    g = Gempa::new();
                 }
                 _ => (),
             },
@@ -108,12 +145,12 @@ fn parse_data(xml: &str) -> Result<Autogempa, Box<dyn Error>> {
         buf.clear();
     }
 
-    Ok(g)
+    // println!("res : {:?}", res);
+    Ok(res)
 }
 
-pub async fn get_data() -> Result<Autogempa, Box<dyn Error>> {
-    let xml = fetch_data(Url::Autogempa.to_str()).await?;
-    parse_data(&xml)
+pub async fn get_data(url: Url) -> Result<Vec<Gempa>, Box<dyn Error>> {
+    fetch_data(url.to_str()).await.and_then(parse_data)
 }
 
 #[cfg(test)]
@@ -121,8 +158,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn autogempa_set_test() {
-        let mut data = Autogempa::new();
+    fn gempa_set_test() {
+        let mut data = Gempa::new();
         data.set("tanggal", "22-11-2021");
         let expected = Some("22-11-2021".to_string());
 
@@ -131,9 +168,46 @@ mod tests {
 
     #[test]
     fn parse_data_test() {
-        let data = "<Tanggal>30-Jul-20</Tanggal><Jam>09:51:20 WIB</Jam>";
+        let data = "<gempa><Tanggal>30-Jul-20</Tanggal><Jam>09:51:20 WIB</Jam></gempa>";
         let expected = Some("30-Jul-20".to_string());
 
-        assert_eq!(parse_data(data).unwrap().tanggal, expected);
+        assert_eq!(parse_data(data).unwrap()[0].tanggal, expected);
+    }
+
+    #[test]
+    fn parse_data_without_gempa_tag_test() {
+        let data = "<Tanggal>30-Jul-20</Tanggal><Jam>09:51:20 WIB</Jam>";
+
+        assert_eq!(parse_data(data).unwrap().len(), 0);
+    }
+
+    #[tokio::test]
+    async fn autogempa_get_data() {
+        let data = get_data(Url::Autogempa).await.unwrap();
+
+        assert!(data[0].tanggal.is_some());
+    }
+
+    #[tokio::test]
+    async fn gempaterkini_get_data() {
+        let data = get_data(Url::GempaTerkini).await.unwrap();
+
+        assert!(data[0].tanggal.is_some());
+    }
+
+    #[test]
+    fn url_from_str_test() {
+        let data = "gempaterkini";
+        let expected = Url::GempaTerkini;
+
+        assert_eq!(Url::from_str(data).unwrap(), expected);
+    }
+
+    #[test]
+    fn url_from_str_but_with_string_test() {
+        let data = String::from("gempaterkini");
+        let expected = Url::GempaTerkini;
+
+        assert_eq!(Url::from_str(data).unwrap(), expected);
     }
 }
