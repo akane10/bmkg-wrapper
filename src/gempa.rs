@@ -4,7 +4,24 @@ use quick_xml::Reader;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value as JsonValue};
 use std::borrow::Borrow;
-use std::error::Error;
+
+#[derive(Debug)]
+pub enum Error {
+    ReqwestError(reqwest::Error),
+    XmlError(quick_xml::Error),
+}
+
+impl From<reqwest::Error> for Error {
+    fn from(error: reqwest::Error) -> Self {
+        Error::ReqwestError(error)
+    }
+}
+
+impl From<quick_xml::Error> for Error {
+    fn from(error: quick_xml::Error) -> Self {
+        Error::XmlError(error)
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Url {
@@ -106,12 +123,7 @@ impl Gempa {
     }
 }
 
-async fn fetch_data<T: Borrow<str>>(url: T) -> Result<String, Box<dyn std::error::Error>> {
-    let resp = reqwest::get(url.borrow()).await?.text().await?;
-    Ok(resp)
-}
-
-fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Box<dyn Error>> {
+fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
     let mut reader = Reader::from_str(xml.borrow());
     reader.trim_text(true);
 
@@ -124,7 +136,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Box<dyn Error>> {
             Ok(Event::Start(ref e)) => match e.name() {
                 b"Tanggal" | b"Jam" | b"coordinates" | b"Lintang" | b"Bujur" | b"Magnitude"
                 | b"Kedalaman" | b"Wilayah" | b"Potensi" | b"Dirasakan" | b"Shakemap" => {
-                    let text = reader.read_text(e.name(), &mut Vec::new()).unwrap();
+                    let text = reader.read_text(e.name(), &mut Vec::new())?;
                     let v = e.unescape_and_decode(&reader).expect("Error!");
                     g.set(v, text.clone());
                 }
@@ -149,8 +161,9 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Box<dyn Error>> {
     Ok(res)
 }
 
-pub async fn get_data(url: Url) -> Result<Vec<Gempa>, Box<dyn Error>> {
-    fetch_data(url.to_str()).await.and_then(parse_data)
+pub async fn get_data(url: Url) -> Result<Vec<Gempa>, Error> {
+    let xml = reqwest::get(url.to_str()).await?.text().await?;
+    parse_data(xml)
 }
 
 #[cfg(test)]
