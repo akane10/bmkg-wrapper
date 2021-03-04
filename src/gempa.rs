@@ -132,8 +132,11 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
             Ok(Event::Start(ref e)) => match e.name() {
                 b"Tanggal" | b"Jam" | b"coordinates" | b"Lintang" | b"Bujur" | b"Magnitude"
                 | b"Kedalaman" | b"Wilayah" | b"Potensi" | b"Dirasakan" | b"Shakemap" => {
-                    let text = reader.read_text(e.name(), &mut Vec::new())?;
-                    let v = e.unescape_and_decode(&reader).expect("Error!");
+                    let mut text = reader.read_text(e.name(), &mut Vec::new())?;
+                    let v = e.unescape_and_decode(&reader)?;
+                    if v == "Shakemap" {
+                        text = format!("https://data.bmkg.go.id/DataMKG/TEWS/{}", text);
+                    }
                     match g.set(v, text.clone()) {
                         Err(e) => {
                             res = Err(e);
