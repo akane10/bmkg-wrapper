@@ -138,10 +138,6 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
                         text = format!("https://data.bmkg.go.id/DataMKG/TEWS/{}", text);
                     }
                     match g.set(v, text.clone()) {
-                        Err(e) => {
-                            res = Err(e);
-                            break;
-                        }
                         _ => (),
                     };
                 }
