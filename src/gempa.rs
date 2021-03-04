@@ -61,43 +61,57 @@ impl Gempa {
             shakemap: None,
         }
     }
-    fn set<T: Borrow<str>>(&mut self, k: T, v: T) {
+    fn set<T: Borrow<str>>(&mut self, k: T, v: T) -> Result<(), Error> {
         let v = v.borrow().to_owned();
         match k.borrow().to_lowercase().as_str() {
             "tanggal" => {
                 self.tanggal = Some(v);
+                Ok(())
             }
             "jam" => {
                 self.jam = Some(v);
+                Ok(())
             }
             "coordinates" => {
                 self.coordinates = Some(v);
+                Ok(())
             }
             "lintang" => {
                 self.lintang = Some(v);
+                Ok(())
             }
             "bujur" => {
                 self.bujur = Some(v);
+                Ok(())
             }
             "magnitude" => {
                 self.magnitude = Some(v);
+                Ok(())
             }
             "kedalaman" => {
                 self.kedalaman = Some(v);
+                Ok(())
             }
             "wilayah" => {
                 self.wilayah = Some(v);
+                Ok(())
             }
             "potensi" => {
                 self.potensi = Some(v);
+                Ok(())
             }
             "dirasakan" => {
                 self.dirasakan = Some(v);
+                Ok(())
             }
             "shakemap" => {
                 self.shakemap = Some(v);
+                Ok(())
             }
-            _ => (),
+            x => {
+                let msg = format!("unknown field {}", x);
+                Err(Error::BmkgError(msg))
+            }
         }
     }
     pub fn to_json(self) -> JsonValue {
@@ -111,7 +125,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
 
     let mut buf = Vec::new();
     let mut g = Gempa::new();
-    let mut res = Vec::new();
+    let mut res: Result<Vec<Gempa>, Error> = Ok(Vec::new());
 
     loop {
         match reader.read_event(&mut buf) {
@@ -120,19 +134,31 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
                 | b"Kedalaman" | b"Wilayah" | b"Potensi" | b"Dirasakan" | b"Shakemap" => {
                     let text = reader.read_text(e.name(), &mut Vec::new())?;
                     let v = e.unescape_and_decode(&reader).expect("Error!");
-                    g.set(v, text.clone());
+                    match g.set(v, text.clone()) {
+                        Err(e) => {
+                            res = Err(e);
+                            break;
+                        }
+                        _ => (),
+                    };
                 }
                 _ => (),
             },
             Ok(Event::End(ref e)) => match e.name() {
                 b"gempa" => {
-                    res.push(g);
+                    res = res.and_then(|mut x| {
+                        x.push(g);
+                        Ok(x)
+                    });
                     g = Gempa::new();
                 }
                 _ => (),
             },
             Ok(Event::Eof) => break, // exits the loop when reaching end of file
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+            Err(e) => {
+                res = Err(Error::XmlError(e));
+                break;
+            }
             _ => (), // There are several other `Event`s we do not consider here
         }
 
@@ -140,7 +166,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
     }
 
     // println!("res : {:?}", res);
-    Ok(res)
+    res
 }
 
 pub async fn get_data(url: Url) -> Result<Vec<Gempa>, Error> {
@@ -155,7 +181,7 @@ mod tests {
     #[test]
     fn gempa_set_test() {
         let mut data = Gempa::new();
-        data.set("tanggal", "22-11-2021");
+        data.set("tanggal", "22-11-2021").unwrap();
         let expected = Some("22-11-2021".to_string());
 
         assert_eq!(data.tanggal, expected);
