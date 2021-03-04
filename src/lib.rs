@@ -1,3 +1,4 @@
+pub mod cuaca;
 pub mod gempa;
 
 #[derive(Debug)]
