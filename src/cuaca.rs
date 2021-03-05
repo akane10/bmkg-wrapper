@@ -128,14 +128,14 @@ impl Url {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Value {
     pub unit: Option<String>,
-    pub text: Option<String>,
+    pub value: Option<String>,
 }
 
 impl Value {
     fn new() -> Self {
         Self {
             unit: None,
-            text: None,
+            value: None,
         }
     }
 }
@@ -183,7 +183,6 @@ impl Parameter {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Name {
-    #[serde(rename = "xml:lang")]
     pub lang: Option<String>,
     pub text: Option<String>,
 }
@@ -450,7 +449,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Data, Error> {
                 }
                 b"value" => {
                     let text = reader.read_text(e.name(), &mut Vec::new())?;
-                    value.text = Some(text);
+                    value.value = Some(text);
                     let values = e
                         .attributes()
                         .map(|a| a.unwrap().unescape_and_decode_value(&reader).unwrap())
