@@ -22,7 +22,7 @@ impl Domain {
     }
 }
 
-pub enum Url {
+pub enum Province {
     Aceh,
     Bali,
     BangkaBelitung,
@@ -60,7 +60,7 @@ pub enum Url {
     Indonesia,
 }
 
-impl Url {
+impl Province {
     fn build_url(s: &str) -> String {
         let s = Domain::get_data()
             .into_iter()
@@ -72,82 +72,82 @@ impl Url {
             BMKG_BASE_URL, s.url_param
         )
     }
-    pub fn to_str(&self) -> String {
+    pub fn to_url(&self) -> String {
         match self {
-            Url::Aceh => Self::build_url("aceh"),
-            Url::Bali => Self::build_url("bali"),
-            Url::BangkaBelitung => Self::build_url("bangka_belitung"),
-            Url::Banten => Self::build_url("banten"),
-            Url::Bengkulu => Self::build_url("bengkulu"),
-            Url::DIY => Self::build_url("diy"),
-            Url::DKI => Self::build_url("dki"),
-            Url::Gorontalo => Self::build_url("gorontalo"),
-            Url::Jambi => Self::build_url("jambi"),
-            Url::JawaBarat => Self::build_url("jabar"),
-            Url::JawaTengah => Self::build_url("jateng"),
-            Url::JawaTimur => Self::build_url("jatim"),
-            Url::Kalbar => Self::build_url("kalbar"),
-            Url::Kalsel => Self::build_url("kalsel"),
-            Url::Kalteng => Self::build_url("kalteng"),
-            Url::Kaltim => Self::build_url("kaltim"),
-            Url::Kaltara => Self::build_url("kaltara"),
-            Url::KepulauanRiau => Self::build_url("kepri"),
-            Url::Lampung => Self::build_url("lampung"),
-            Url::Maluku => Self::build_url("maluku"),
-            Url::MalukuUtara => Self::build_url("maluku_utara"),
-            Url::NTB => Self::build_url("ntb"),
-            Url::NTT => Self::build_url("ntt"),
-            Url::Papua => Self::build_url("papua"),
-            Url::PapuaBarat => Self::build_url("papua_barat"),
-            Url::Riau => Self::build_url("riau"),
-            Url::SulawesiBarat => Self::build_url("sulawesi_barat"),
-            Url::SulawesiSelatan => Self::build_url("sulawesi_selatan"),
-            Url::SulawesiTengah => Self::build_url("sulawesi_tengah"),
-            Url::SulawesiTenggara => Self::build_url("sulawesi_tenggara"),
-            Url::SulawesiUtara => Self::build_url("sulawesi_utara"),
-            Url::SumateraBarat => Self::build_url("sumatera_barat"),
-            Url::SumateraSelatan => Self::build_url("sumatera_selatan"),
-            Url::SumateraUtara => Self::build_url("sumatera_utara"),
-            Url::Indonesia => Self::build_url("indonesia"),
+            Self::Aceh => Self::build_url("aceh"),
+            Self::Bali => Self::build_url("bali"),
+            Self::BangkaBelitung => Self::build_url("bangka_belitung"),
+            Self::Banten => Self::build_url("banten"),
+            Self::Bengkulu => Self::build_url("bengkulu"),
+            Self::DIY => Self::build_url("diy"),
+            Self::DKI => Self::build_url("dki"),
+            Self::Gorontalo => Self::build_url("gorontalo"),
+            Self::Jambi => Self::build_url("jambi"),
+            Self::JawaBarat => Self::build_url("jabar"),
+            Self::JawaTengah => Self::build_url("jateng"),
+            Self::JawaTimur => Self::build_url("jatim"),
+            Self::Kalbar => Self::build_url("kalbar"),
+            Self::Kalsel => Self::build_url("kalsel"),
+            Self::Kalteng => Self::build_url("kalteng"),
+            Self::Kaltim => Self::build_url("kaltim"),
+            Self::Kaltara => Self::build_url("kaltara"),
+            Self::KepulauanRiau => Self::build_url("kepri"),
+            Self::Lampung => Self::build_url("lampung"),
+            Self::Maluku => Self::build_url("maluku"),
+            Self::MalukuUtara => Self::build_url("maluku_utara"),
+            Self::NTB => Self::build_url("ntb"),
+            Self::NTT => Self::build_url("ntt"),
+            Self::Papua => Self::build_url("papua"),
+            Self::PapuaBarat => Self::build_url("papua_barat"),
+            Self::Riau => Self::build_url("riau"),
+            Self::SulawesiBarat => Self::build_url("sulawesi_barat"),
+            Self::SulawesiSelatan => Self::build_url("sulawesi_selatan"),
+            Self::SulawesiTengah => Self::build_url("sulawesi_tengah"),
+            Self::SulawesiTenggara => Self::build_url("sulawesi_tenggara"),
+            Self::SulawesiUtara => Self::build_url("sulawesi_utara"),
+            Self::SumateraBarat => Self::build_url("sumatera_barat"),
+            Self::SumateraSelatan => Self::build_url("sumatera_selatan"),
+            Self::SumateraUtara => Self::build_url("sumatera_utara"),
+            Self::Indonesia => Self::build_url("indonesia"),
         }
     }
-    pub fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
+    pub fn from_str<T: Borrow<str>>(s: T) -> Option<Self> {
         match s.borrow().to_lowercase().as_ref() {
-            "aceh" => Some(Url::Aceh),
-            "bali" => Some(Url::Bali),
-            "bangka_belitung" => Some(Url::BangkaBelitung),
-            "banten" => Some(Url::Banten),
-            "bengkulu" => Some(Url::Bengkulu),
-            "diy" => Some(Url::DIY),
-            "dki" => Some(Url::DKI),
-            "gorontalo" => Some(Url::Gorontalo),
-            "jambi" => Some(Url::Jambi),
-            "jabar" => Some(Url::JawaBarat),
-            "jateng" => Some(Url::JawaTengah),
-            "jatim" => Some(Url::JawaTimur),
-            "kalbar" => Some(Url::Kalbar),
-            "kalsel" => Some(Url::Kalsel),
-            "kalteng" => Some(Url::Kalteng),
-            "kaltim" => Some(Url::Kaltim),
-            "kaltara" => Some(Url::Kaltara),
-            "kepri" => Some(Url::KepulauanRiau),
-            "lampung" => Some(Url::Lampung),
-            "maluku_utara" => Some(Url::MalukuUtara),
-            "maluku" => Some(Url::Maluku),
-            "ntb" => Some(Url::NTB),
-            "ntt" => Some(Url::NTT),
-            "papua" => Some(Url::Papua),
-            "papua_barat" => Some(Url::PapuaBarat),
-            "riau" => Some(Url::Riau),
-            "sulawesi_barat" => Some(Url::SulawesiBarat),
-            "sulawesi_selatan" => Some(Url::SulawesiSelatan),
-            "sulawesi_tengah" => Some(Url::SulawesiTengah),
-            "sulawesi_tenggara" => Some(Url::SulawesiTenggara),
-            "sulawesi_utara" => Some(Url::SulawesiUtara),
-            "sumatera_barat" => Some(Url::SumateraUtara),
-            "sumatera_selatan" => Some(Url::SumateraSelatan),
-            "sumatera_utara" => Some(Url::SumateraUtara),
-            "indonesia" => Some(Url::Indonesia),
+            "aceh" => Some(Self::Aceh),
+            "bali" => Some(Self::Bali),
+            "bangka_belitung" => Some(Self::BangkaBelitung),
+            "banten" => Some(Self::Banten),
+            "bengkulu" => Some(Self::Bengkulu),
+            "diy" => Some(Self::DIY),
+            "dki" => Some(Self::DKI),
+            "gorontalo" => Some(Self::Gorontalo),
+            "jambi" => Some(Self::Jambi),
+            "jabar" => Some(Self::JawaBarat),
+            "jateng" => Some(Self::JawaTengah),
+            "jatim" => Some(Self::JawaTimur),
+            "kalbar" => Some(Self::Kalbar),
+            "kalsel" => Some(Self::Kalsel),
+            "kalteng" => Some(Self::Kalteng),
+            "kaltim" => Some(Self::Kaltim),
+            "kaltara" => Some(Self::Kaltara),
+            "kepri" => Some(Self::KepulauanRiau),
+            "lampung" => Some(Self::Lampung),
+            "maluku_utara" => Some(Self::MalukuUtara),
+            "maluku" => Some(Self::Maluku),
+            "ntb" => Some(Self::NTB),
+            "ntt" => Some(Self::NTT),
+            "papua" => Some(Self::Papua),
+            "papua_barat" => Some(Self::PapuaBarat),
+            "riau" => Some(Self::Riau),
+            "sulawesi_barat" => Some(Self::SulawesiBarat),
+            "sulawesi_selatan" => Some(Self::SulawesiSelatan),
+            "sulawesi_tengah" => Some(Self::SulawesiTengah),
+            "sulawesi_tenggara" => Some(Self::SulawesiTenggara),
+            "sulawesi_utara" => Some(Self::SulawesiUtara),
+            "sumatera_barat" => Some(Self::SumateraUtara),
+            "sumatera_selatan" => Some(Self::SumateraSelatan),
+            "sumatera_utara" => Some(Self::SumateraUtara),
+            "indonesia" => Some(Self::Indonesia),
             _ => None,
         }
     }
@@ -525,8 +525,8 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Data, Error> {
     Ok(data)
 }
 
-pub async fn get_data(url: Url) -> Result<Data, Error> {
-    let xml = reqwest::get(&url.to_str()).await?.text().await?;
+pub async fn get_data(p: Province) -> Result<Data, Error> {
+    let xml = reqwest::get(&p.to_url()).await?.text().await?;
     let data = parse_data(xml)?;
     Ok(data)
 }
@@ -537,7 +537,7 @@ mod tests {
 
     #[tokio::test]
     async fn get_data_cuaca_test() {
-        let res = get_data(Url::DKI).await;
+        let res = get_data(Province::DKI).await;
 
         assert!(res.is_ok());
     }
@@ -551,7 +551,7 @@ mod tests {
 
     #[test]
     fn build_url_test() {
-        let data = Url::build_url("bengkulu");
+        let data = Province::build_url("bengkulu");
         let expected = format!(
             "{}/DataMKG/MEWS/DigitalForecast/{}",
             BMKG_BASE_URL, "DigitalForecast-Bengkulu.xml"
