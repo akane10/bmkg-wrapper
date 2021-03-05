@@ -83,6 +83,46 @@ impl Url {
             Url::Indonesia => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Indonesia.xml",
         }
     }
+    pub fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
+        match s.borrow().to_lowercase().as_ref() {
+            "aceh" => Some(Url::Aceh),
+            "bali" => Some(Url::Bali),
+            "bangka_belitung" => Some(Url::BangkaBelitung),
+            "banten" => Some(Url::Banten),
+            "bengkulu" => Some(Url::Bengkulu),
+            "dyi" => Some(Url::DIY),
+            "dki" => Some(Url::DKI),
+            "gorontalo" => Some(Url::Gorontalo),
+            "jambi" => Some(Url::Jambi),
+            "jabar" => Some(Url::JawaBarat),
+            "jateng" => Some(Url::JawaTengah),
+            "jatim" => Some(Url::JawaTimur),
+            "kalbar" => Some(Url::Kalbar),
+            "kalsel" => Some(Url::Kalsel),
+            "kalteng" => Some(Url::Kalteng),
+            "kaltim" => Some(Url::Kaltim),
+            "kaltara" => Some(Url::Kaltara),
+            "kepri" => Some(Url::KepulauanRiau),
+            "lampung" => Some(Url::Lampung),
+            "maluku_utara" => Some(Url::MalukuUtara),
+            "maluku" => Some(Url::Maluku),
+            "ntb" => Some(Url::NTB),
+            "ntt" => Some(Url::NTT),
+            "papua" => Some(Url::Papua),
+            "papua_barat" => Some(Url::PapuaBarat),
+            "riau" => Some(Url::Riau),
+            "sulawesi_barat" => Some(Url::SulawesiBarat),
+            "sulawesi_selatan" => Some(Url::SulawesiSelatan),
+            "sulawesi_tengah" => Some(Url::SulawesiTengah),
+            "sulawesi_tenggara" => Some(Url::SulawesiTenggara),
+            "sulawesi_utara" => Some(Url::SulawesiUtara),
+            "sumatera_barat" => Some(Url::SumateraUtara),
+            "sumatera_selatan" => Some(Url::SumateraSelatan),
+            "sumatera_utara" => Some(Url::SumateraUtara),
+            "indonesia" => Some(Url::Indonesia),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -106,7 +146,6 @@ pub struct TimeRange {
     pub typ: Option<String>,
     pub h: Option<String>,
     pub datetime: Option<String>,
-    #[serde(rename = "value", default)]
     pub values: Vec<Value>,
     // value: Option<String>,
 }
@@ -128,7 +167,6 @@ pub struct Parameter {
     pub description: Option<String>,
     #[serde(rename = "type", default)]
     pub typ: Option<String>,
-    #[serde(rename = "timerange", default)]
     pub timeranges: Vec<TimeRange>,
 }
 
@@ -172,9 +210,7 @@ pub struct Area {
     pub description: Option<String>,
     pub domain: Option<String>,
     pub tags: Option<String>,
-    #[serde(rename = "name")]
     pub names: Vec<Name>,
-    #[serde(rename = "parameter", default)]
     pub parameters: Vec<Parameter>,
 }
 
@@ -226,7 +262,6 @@ impl Issue {
 pub struct Forecast {
     pub domain: Option<String>,
     pub issue: Option<Issue>,
-    #[serde(rename = "area", default)]
     pub areas: Vec<Area>,
 }
 
