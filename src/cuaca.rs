@@ -535,6 +535,6 @@ mod tests {
     fn domain_list_get_data_test() {
         let data = Domain::get_data();
 
-        assert!(data.len() > 1);
+        assert!(data.len() == 35);
     }
 }
