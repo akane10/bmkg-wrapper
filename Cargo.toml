@@ -1,5 +1,5 @@
 [package]
-name = "bmkg-wrapper"
+name = "bmkgw"
 version = "0.1.0"
 authors = ["yapie <targaryen.akane@gmail.com>"]
 edition = "2018"
