@@ -1,0 +1,177 @@
+[
+  {
+    "name": "Provinsi Aceh",
+    "value": "aceh",
+    "url_param": "DigitalForecast-Aceh.xml"
+  },
+  {
+    "name": "Provinsi Bali",
+    "value": "bali",
+    "url_param": "DigitalForecast-Bali.xml"
+  },
+  {
+    "name": "Provinsi Bangka Belitung",
+    "value": "bangka_belitung",
+    "url_param": "DigitalForecast-BangkaBelitung.xml"
+  },
+  {
+    "name": "Provinsi Banten",
+    "value": "banten",
+    "url_param": "DigitalForecast-Banten.xml"
+  },
+  {
+    "name": "Provinsi Bengkulu",
+    "value": "bengkulu",
+    "url_param": "DigitalForecast-Bengkulu.xml"
+  },
+  {
+    "name": "Provinsi DI Yogyakarta",
+    "value": "diy",
+    "url_param": "DigitalForecast-DIYogyakarta.xml"
+  },
+  {
+    "name": "Provinsi DKI Jakarta",
+    "value": "dki",
+    "url_param": "DigitalForecast-DKIJakarta.xml"
+  },
+  {
+    "name": "Provinsi Gorontalo",
+    "value": "gorontalo",
+    "url_param": "DigitalForecast-Gorontalo.xml"
+  },
+  {
+    "name": "Provinsi Jambi",
+    "value": "jambi",
+    "url_param": "DigitalForecast-Jambi.xml"
+  },
+  {
+    "name": "Provinsi Jawa Barat",
+    "value": "jabar",
+    "url_param": "DigitalForecast-JawaBarat.xml"
+  },
+  {
+    "name": "Provinsi Jawa Tengah",
+    "value": "jateng",
+    "url_param": "DigitalForecast-JawaTengah.xml"
+  },
+  {
+    "name": "Provinsi Jawa Timur",
+    "value": "jatim",
+    "url_param": "DigitalForecast-JawaTimur.xml"
+  },
+  {
+    "name": "Provinsi Kalimantan Barat",
+    "value": "kalbar",
+    "url_param": "DigitalForecast-KalimantanBarat.xml"
+  },
+  {
+    "name": "Provinsi Kalimantan Selatan",
+    "value": "kalsel",
+    "url_param": "DigitalForecast-KalimantanSelatan.xml"
+  },
+  {
+    "name": "Provinsi Kalimantan Tengah",
+    "value": "kalteng",
+    "url_param": "DigitalForecast-KalimantanTengah.xml"
+  },
+  {
+    "name": "Provinsi Kalimantan Timur",
+    "value": "kaltim",
+    "url_param": "DigitalForecast-KalimantanTimur.xml"
+  },
+  {
+    "name": "Provinsi Kalimantan Utara",
+    "value": "kaltara",
+    "url_param": "DigitalForecast-KalimantanUtara.xml"
+  },
+  {
+    "name": "Provinsi Kepulauan Riau",
+    "value": "kepri",
+    "url_param": "DigitalForecast-KepulauanRiau.xml"
+  },
+  {
+    "name": "Provinsi Lampung",
+    "value": "lampung",
+    "url_param": "DigitalForecast-Lampung.xml"
+  },
+  {
+    "name": "Provinsi Maluku",
+    "value": "maluku",
+    "url_param": "DigitalForecast-Maluku.xml"
+  },
+  {
+    "name": "Provinsi Maluku Utara",
+    "value": "maluku_utara",
+    "url_param": "DigitalForecast-MalukuUtara.xml"
+  },
+  {
+    "name": "Provinsi Nusa Tenggara Barat",
+    "value": "ntb",
+    "url_param": "DigitalForecast-NusaTenggaraBarat.xml"
+  },
+  {
+    "name": "Provinsi Nusa Tenggara Timur",
+    "value": "ntt",
+    "url_param": "DigitalForecast-NusaTenggaraTimur.xml"
+  },
+  {
+    "name": "Provinsi Papua",
+    "value": "papua",
+    "url_param": "DigitalForecast-Papua.xml"
+  },
+  {
+    "name": "Provinsi Papua Barat",
+    "value": "papua_barat",
+    "url_param": "DigitalForecast-PapuaBarat.xml"
+  },
+  {
+    "name": "Provinsi Riau",
+    "value": "riau",
+    "url_param": "DigitalForecast-Riau.xml"
+  },
+  {
+    "name": "Provinsi Sulawesi Barat",
+    "value": "sulawesi_barat",
+    "url_param": "DigitalForecast-SulawesiBarat.xml"
+  },
+  {
+    "name": "Provinsi Sulawesi Selatan",
+    "value": "sulawesi_selatan",
+    "url_param": "DigitalForecast-SulawesiSelatan.xml"
+  },
+  {
+    "name": "Provinsi Sulawesi Tengah",
+    "value": "sulawesi_tengah",
+    "url_param": "DigitalForecast-SulawesiTengah.xml"
+  },
+  {
+    "name": "Provinsi Sulawesi Tenggara",
+    "value": "sulawesi_tenggara",
+    "url_param": "DigitalForecast-SulawesiTenggara.xml"
+  },
+  {
+    "name": "Provinsi Sulawesi Utara",
+    "value": "sulawesi_utara",
+    "url_param": "DigitalForecast-SulawesiUtara.xml"
+  },
+  {
+    "name": "Provinsi Sumatera Barat",
+    "value": "sumatera_barat",
+    "url_param": "DigitalForecast-SumateraBarat.xml"
+  },
+  {
+    "name": "Provinsi Sumatera Selatan",
+    "value": "sumatera_selatan",
+    "url_param": "DigitalForecast-SumateraSelatan.xml"
+  },
+  {
+    "name": "Provinsi Sumatera Utara",
+    "value": "sumatera_utara",
+    "url_param": "DigitalForecast-SumateraUtara.xml"
+  },
+  {
+    "name": "Provinsi Indonesia",
+    "value": "indonesia",
+    "url_param": "DigitalForecast-Indonesia.xml"
+  }
+]

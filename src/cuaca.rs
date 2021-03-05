@@ -5,6 +5,23 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value as JsonValue};
 use std::borrow::Borrow;
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Domain {
+    pub name: String,
+    pub value: String,
+    pub url_param: String,
+}
+
+impl Domain {
+    pub fn get_data() -> Vec<Domain> {
+        let bytes = include_bytes!("../domain_list.json");
+        let data = String::from_utf8_lossy(bytes);
+        let data_domain: Vec<Domain> = serde_json::from_str(&data).unwrap();
+
+        data_domain
+    }
+}
+
 pub enum Url {
     Aceh,
     Bali,
@@ -90,7 +107,7 @@ impl Url {
             "bangka_belitung" => Some(Url::BangkaBelitung),
             "banten" => Some(Url::Banten),
             "bengkulu" => Some(Url::Bengkulu),
-            "dyi" => Some(Url::DIY),
+            "diy" => Some(Url::DIY),
             "dki" => Some(Url::DKI),
             "gorontalo" => Some(Url::Gorontalo),
             "jambi" => Some(Url::Jambi),
@@ -512,5 +529,12 @@ mod tests {
         let res = get_data(Url::DKI).await;
 
         assert!(res.is_ok());
+    }
+
+    #[test]
+    fn domain_list_get_data_test() {
+        let data = Domain::get_data();
+
+        assert!(data.len() > 1);
     }
 }
