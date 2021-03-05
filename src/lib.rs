@@ -1,6 +1,8 @@
 pub mod cuaca;
 pub mod gempa;
 
+const BMKG_BASE_URL: &str = "https://data.bmkg.go.id";
+
 #[derive(Debug)]
 pub enum Error {
     ReqwestError(reqwest::Error),

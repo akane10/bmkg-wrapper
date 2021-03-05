@@ -1,4 +1,4 @@
-use crate::Error;
+use crate::{Error, BMKG_BASE_URL};
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use serde::{Deserialize, Serialize};
@@ -61,43 +61,54 @@ pub enum Url {
 }
 
 impl Url {
-    pub fn to_str(&self) -> &str {
+    fn build_url(s: &str) -> String {
+        let s = Domain::get_data()
+            .into_iter()
+            .find(|x| x.value == s)
+            .unwrap();
+
+        format!(
+            "{}/DataMKG/MEWS/DigitalForecast/{}",
+            BMKG_BASE_URL, s.url_param
+        )
+    }
+    pub fn to_str(&self) -> String {
         match self {
-            Url::Aceh => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Aceh.xml",
-            Url::Bali => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Bali.xml",
-            Url::BangkaBelitung => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-BangkaBelitung.xml",
-            Url::Banten => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Banten.xml",
-            Url::Bengkulu => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Bengkulu.xml",
-            Url::DIY => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-DIYogyakarta.xml",
-            Url::DKI => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-DKIJakarta.xml",
-            Url::Gorontalo => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Gorontalo.xml",
-            Url::Jambi => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Jambi.xml",
-            Url::JawaBarat => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-JawaBarat.xml",
-            Url::JawaTengah => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-JawaTengah.xml",
-            Url::JawaTimur => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-JawaTimur.xml",
-            Url::Kalbar => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-KalimantanBarat.xml",
-            Url::Kalsel => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-KalimantanSelatan.xml",
-            Url::Kalteng => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-KalimantanTengah.xml",
-            Url::Kaltim => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-KalimantanTimur.xml",
-            Url::Kaltara => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-KalimantanUtara.xml",
-            Url::KepulauanRiau => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-KepulauanRiau.xml",
-            Url::Lampung => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Lampung.xml",
-            Url::Maluku => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Maluku.xml",
-            Url::MalukuUtara => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-MalukuUtara.xml",
-            Url::NTB => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-NusaTenggaraBarat.xml",
-            Url::NTT => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-NusaTenggaraTimur.xml",
-            Url::Papua => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Papua.xml",
-            Url::PapuaBarat => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-PapuaBarat.xml",
-            Url::Riau => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Riau.xml",
-            Url::SulawesiBarat => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SulawesiBarat.xml",
-            Url::SulawesiSelatan => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SulawesiSelatan.xml",
-            Url::SulawesiTengah => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SulawesiTengah.xml",
-            Url::SulawesiTenggara => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SulawesiTenggara.xml",
-            Url::SulawesiUtara => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SulawesiUtara.xml",
-            Url::SumateraBarat => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SumateraBarat.xml",
-            Url::SumateraSelatan => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SumateraSelatan.xml",
-            Url::SumateraUtara => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-SumateraUtara.xml",
-            Url::Indonesia => "https://data.bmkg.go.id/DataMKG/MEWS/DigitalForecast/DigitalForecast-Indonesia.xml",
+            Url::Aceh => Self::build_url("aceh"),
+            Url::Bali => Self::build_url("bali"),
+            Url::BangkaBelitung => Self::build_url("bangka_belitung"),
+            Url::Banten => Self::build_url("banten"),
+            Url::Bengkulu => Self::build_url("bengkulu"),
+            Url::DIY => Self::build_url("diy"),
+            Url::DKI => Self::build_url("dki"),
+            Url::Gorontalo => Self::build_url("gorontalo"),
+            Url::Jambi => Self::build_url("jambi"),
+            Url::JawaBarat => Self::build_url("jabar"),
+            Url::JawaTengah => Self::build_url("jateng"),
+            Url::JawaTimur => Self::build_url("jatim"),
+            Url::Kalbar => Self::build_url("kalbar"),
+            Url::Kalsel => Self::build_url("kalsel"),
+            Url::Kalteng => Self::build_url("kalteng"),
+            Url::Kaltim => Self::build_url("kaltim"),
+            Url::Kaltara => Self::build_url("kaltara"),
+            Url::KepulauanRiau => Self::build_url("kepri"),
+            Url::Lampung => Self::build_url("lampung"),
+            Url::Maluku => Self::build_url("maluku"),
+            Url::MalukuUtara => Self::build_url("maluku_utara"),
+            Url::NTB => Self::build_url("ntb"),
+            Url::NTT => Self::build_url("ntt"),
+            Url::Papua => Self::build_url("papua"),
+            Url::PapuaBarat => Self::build_url("papua_barat"),
+            Url::Riau => Self::build_url("riau"),
+            Url::SulawesiBarat => Self::build_url("sulawesi_barat"),
+            Url::SulawesiSelatan => Self::build_url("sulawesi_selatan"),
+            Url::SulawesiTengah => Self::build_url("sulawesi_tengah"),
+            Url::SulawesiTenggara => Self::build_url("sulawesi_tenggara"),
+            Url::SulawesiUtara => Self::build_url("sulawesi_utara"),
+            Url::SumateraBarat => Self::build_url("sumatera_barat"),
+            Url::SumateraSelatan => Self::build_url("sumatera_selatan"),
+            Url::SumateraUtara => Self::build_url("sumatera_utara"),
+            Url::Indonesia => Self::build_url("indonesia"),
         }
     }
     pub fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
@@ -515,7 +526,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Data, Error> {
 }
 
 pub async fn get_data(url: Url) -> Result<Data, Error> {
-    let xml = reqwest::get(url.to_str()).await?.text().await?;
+    let xml = reqwest::get(&url.to_str()).await?.text().await?;
     let data = parse_data(xml)?;
     Ok(data)
 }
@@ -536,5 +547,16 @@ mod tests {
         let data = Domain::get_data();
 
         assert!(data.len() == 35);
+    }
+
+    #[test]
+    fn build_url_test() {
+        let data = Url::build_url("bengkulu");
+        let expected = format!(
+            "{}/DataMKG/MEWS/DigitalForecast/{}",
+            BMKG_BASE_URL, "DigitalForecast-Bengkulu.xml"
+        );
+
+        assert!(data == expected);
     }
 }
