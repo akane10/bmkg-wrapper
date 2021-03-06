@@ -1,7 +1,7 @@
 # bmkgw
 
-bmkg wrapper
-for REST API see [bmkgw-api](https://gitlab.com/akane10/bmkgw-api)
+- bmkg wrapper
+- for REST API see [bmkgw-api](https://gitlab.com/akane10/bmkgw-api)
 
 ## Installation
 
@@ -31,5 +31,7 @@ async fn main() -> Result<(), Error> {
       println!("data2 {:#?}", data2);
       println!("data3 {:#?}", data3);
       println!("data4 {:#?}", data4);
+
+      Ok(())
 }
 ```
