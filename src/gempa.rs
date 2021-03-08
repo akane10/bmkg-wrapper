@@ -1,4 +1,4 @@
-use crate::Error;
+use crate::{Error, BMKG_BASE_URL};
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use serde::{Deserialize, Serialize};
@@ -13,11 +13,11 @@ pub enum Url {
 }
 
 impl Url {
-    pub fn to_str(&self) -> &str {
+    pub fn to_str(&self) -> String {
         match self {
-            Url::Autogempa => "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml",
-            Url::GempaTerkini => "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.xml",
-            Url::GempaDirasakan => "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.xml",
+            Url::Autogempa => format!("{}/DataMKG/TEWS/autogempa.xml", BMKG_BASE_URL),
+            Url::GempaTerkini => format!("{}/DataMKG/TEWS/gempaterkini.xml", BMKG_BASE_URL),
+            Url::GempaDirasakan => format!("{}/DataMKG/TEWS/gempadirasakan.xml", BMKG_BASE_URL),
         }
     }
     pub fn from_str<T: Borrow<str>>(s: T) -> Option<Url> {
@@ -135,7 +135,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
                     let mut text = reader.read_text(e.name(), &mut Vec::new())?;
                     let v = e.unescape_and_decode(&reader)?;
                     if v == "Shakemap" {
-                        text = format!("https://data.bmkg.go.id/DataMKG/TEWS/{}", text);
+                        text = format!("{}/DataMKG/TEWS/{}", BMKG_BASE_URL, text);
                     }
                     match g.set(v, text.clone()) {
                         _ => (),
@@ -169,7 +169,7 @@ fn parse_data<T: Borrow<str>>(xml: T) -> Result<Vec<Gempa>, Error> {
 }
 
 pub async fn get_data(url: Url) -> Result<Vec<Gempa>, Error> {
-    let xml = reqwest::get(url.to_str()).await?.text().await?;
+    let xml = reqwest::get(&url.to_str()).await?.text().await?;
     parse_data(xml)
 }
 
