@@ -110,7 +110,7 @@ impl Gempa {
             }
             x => {
                 let msg = format!("unknown field {}", x);
-                Err(Error::BmkgError(msg))
+                Err(Error::Others(msg))
             }
         }
     }
