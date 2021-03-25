@@ -20,7 +20,7 @@ use bmkgw::cuaca::{self, Province, Domain};
 use bmkgw::Error;
 
 async fn main() -> Result<(), Error> {
-      let data: Gempa = gempa::get_data(Url::GempaTerkini).await?;
+      let data: Vec<Gempa> = gempa::get_data(Url::GempaTerkini).await?;
       let data1: Option<Url> = Url::from_str("gempaterkini");
       println!("data {:#?}", data);
       println!("data1 {:#?}", data1);
