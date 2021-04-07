@@ -550,6 +550,12 @@ mod tests {
     }
 
     #[test]
+    #[should_panic]
+    fn to_url_should_panic_test() {
+        Province::build_url("wrong");
+    }
+
+    #[test]
     fn build_url_test() {
         let data = Province::build_url("bengkulu");
         let expected = format!(
@@ -558,5 +564,49 @@ mod tests {
         );
 
         assert!(data == expected);
+    }
+
+    #[test]
+    fn to_url_test() {
+        let data = vec![
+            Province::Aceh,
+            Province::Bali,
+            Province::BangkaBelitung,
+            Province::Banten,
+            Province::Bengkulu,
+            Province::DIY,
+            Province::DKI,
+            Province::Gorontalo,
+            Province::Jambi,
+            Province::JawaBarat,
+            Province::JawaTengah,
+            Province::JawaTimur,
+            Province::Kalbar,
+            Province::Kalsel,
+            Province::Kalteng,
+            Province::Kaltim,
+            Province::Kaltara,
+            Province::KepulauanRiau,
+            Province::Lampung,
+            Province::Maluku,
+            Province::MalukuUtara,
+            Province::NTB,
+            Province::NTT,
+            Province::Papua,
+            Province::PapuaBarat,
+            Province::Riau,
+            Province::SulawesiBarat,
+            Province::SulawesiSelatan,
+            Province::SulawesiTengah,
+            Province::SulawesiTenggara,
+            Province::SulawesiUtara,
+            Province::SumateraBarat,
+            Province::SumateraSelatan,
+            Province::SulawesiUtara,
+            Province::Indonesia,
+        ];
+        let result: Vec<String> = data.iter().map(|i| Province::to_url(i)).collect();
+
+        assert!(result.len() == 35);
     }
 }
